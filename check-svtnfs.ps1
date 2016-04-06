@@ -14,7 +14,7 @@ param(
 )
 
 # Advanced Settings from OmniCube for vSphere Client Administrator Guide
-$SVTnettcpipheapmax = 128
+$SVTnettcpipheapmax = 512 #ESXi 5.1 set to 128, 5.5 set to 512, 6.0 set to 1536
 $SVTnettcpipheapsize = 32
 $SVTnfsmaxvolumes = 256
 $SVTsunrpcmaxconnperip = 128
