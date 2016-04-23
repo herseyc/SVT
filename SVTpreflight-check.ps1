@@ -124,11 +124,11 @@ foreach ($datacenter in $SVTPreFlight.preflight.datacenter) {
               }
               write-host "Testing Reverse DNS Lookup for vCenter IP Address:" $vcenter.ip
               $vcenterhostname = (Resolve-DnsName $vcenter.ip -DnsOnly -ErrorAction SilentlyContinue).NameHost
-              if ( $vcenterhostname -ne $vcenter.hostname ) {
+              if ( $vcenterhostname -match $vcenter.hostname ) {
+                 write-host "Good:" $vcenter.ip "resolved to" $vcenter.hostname "." -ForeGroundColor Green
+              } else {
                  write-host "WARNING:" $vcenter.ip "did not correctly resolve to" $vcenter.hostname -ForeGroundColor Yellow
                  $DeployIssues += 1
-              } else {
-                 write-host "Good:" $vcenter.ip "resolved to" $vcenter.hostname "." -ForeGroundColor Green
               }
 
               write-host "Testing for connection to SimpliVity Arbiter on" $vcenter.ip
@@ -172,18 +172,18 @@ foreach ($datacenter in $SVTPreFlight.preflight.datacenter) {
               write-host "Checking Reverse DNS Lookup for ESXi IP Address:" $node.esxi.ip
               $ESXiHostNameOne = (Resolve-DnsName $node.esxi.ip -Server ($node.esxi.dns1).trim() -DnsOnly -ErrorAction SilentlyContinue).NameHost
               $ESXiHostNameTwo = (Resolve-DnsName $node.esxi.ip -Server ($node.esxi.dns2).trim() -DnsOnly -ErrorAction SilentlyContinue).NameHost
-              if ( $ESXiHostNameOne -ne $node.esxi.hostname ) {
+              if ( $ESXiHostNameOne -match $node.esxi.hostname ) {
+                 write-host "Good:" $node.esxi.ip "resolved to" $node.esxi.hostname "on" ($node.esxi.dns1).trim() -ForeGroundColor Green
+              } else {
                  write-host "WARNING:" $node.esxi.ip "did not correctly resolve to" $node.esxi.hostname  "on" ($node.esxi.dns1).trim() -ForeGroundColor Yellow
                  $DeployIssues += 1
-              } else {
-                 write-host "Good:" $node.esxi.ip "resolved to" $node.esxi.hostname "on" ($node.esxi.dns1).trim() -ForeGroundColor Green
               }  
-              if ( $ESXiHostNameTwo -ne $node.esxi.hostname ) {
+              if ( $ESXiHostNameTwo -match $node.esxi.hostname ) {
+                 write-host "Good:" $node.esxi.ip "resolved to" $node.esxi.hostname "on" ($node.esxi.dns2).trim() -ForeGroundColor Green
+              } else {
                  write-host "WARNING:" $node.esxi.ip "did not correctly resolve to" $node.esxi.hostname  "on" ($node.esxi.dns2).trim() -ForeGroundColor Yellow
                  $DeployIssues += 1
-              } else {
-                 write-host "Good:" $node.esxi.ip "resolved to" $node.esxi.hostname "on" ($node.esxi.dns2).trim() -ForeGroundColor Green
-              }  
+              }   
             
               # Check ESXi Management IP Address - Should not respond.
               write-host "Testing ESXi Management IP Address:" $node.esxi.ip
