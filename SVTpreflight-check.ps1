@@ -54,7 +54,7 @@ Function ResolveHosttoIP {
     [string]$DNS)
     # write-host "Checking" $HOSTNAME "on" $DNS
     try {
-       $ResolvedIP = (Resolve-DnsName $HOSTNAME -Server $DNS -DnsOnly -ErrorAction SilentlyContinue).IPAddress
+       $ResolvedIP = (Resolve-DnsName $HOSTNAME -Server $DNS -ErrorAction SilentlyContinue).IPAddress
     }
     catch { 
        $ResolvedIP = "Unable to resolve Hostname" 
@@ -115,7 +115,7 @@ foreach ($datacenter in $SVTPreFlight.preflight.datacenter) {
               }
               # vCenter DNS Lookup
               write-host "Testing Forward DNS Lookup for vCenter Hostname:" $vcenter.hostname
-              $vcenteripaddress = (Resolve-DnsName $vcenter.hostname -DnsOnly -ErrorAction SilentlyContinue).IPAddress
+              $vcenteripaddress = (Resolve-DnsName $vcenter.hostname -ErrorAction SilentlyContinue).IPAddress
               if ( $vcenteripaddress -ne $vcenter.ip  ) {
                  write-host "WARNING:" $vcenter.hostname "did not correctly resolve to" $vcenter.ip -ForeGroundColor Yellow
                  $DeployIssues += 1
@@ -123,7 +123,7 @@ foreach ($datacenter in $SVTPreFlight.preflight.datacenter) {
                  write-host "Good:" $vcenter.hostname "resolved to" $vcenter.ip -ForeGroundColor Green
               }
               write-host "Testing Reverse DNS Lookup for vCenter IP Address:" $vcenter.ip
-              $vcenterhostname = (Resolve-DnsName $vcenter.ip -DnsOnly -ErrorAction SilentlyContinue).NameHost
+              $vcenterhostname = (Resolve-DnsName $vcenter.ip -ErrorAction SilentlyContinue).NameHost
               if ( $vcenterhostname -match $vcenter.hostname ) {
                  write-host "Good:" $vcenter.ip "resolved to" $vcenter.hostname "." -ForeGroundColor Green
               } else {
@@ -170,8 +170,8 @@ foreach ($datacenter in $SVTPreFlight.preflight.datacenter) {
               }
 
               write-host "Checking Reverse DNS Lookup for ESXi IP Address:" $node.esxi.ip
-              $ESXiHostNameOne = (Resolve-DnsName $node.esxi.ip -Server ($node.esxi.dns1).trim() -DnsOnly -ErrorAction SilentlyContinue).NameHost
-              $ESXiHostNameTwo = (Resolve-DnsName $node.esxi.ip -Server ($node.esxi.dns2).trim() -DnsOnly -ErrorAction SilentlyContinue).NameHost
+              $ESXiHostNameOne = (Resolve-DnsName $node.esxi.ip -Server ($node.esxi.dns1).trim() -ErrorAction SilentlyContinue).NameHost
+              $ESXiHostNameTwo = (Resolve-DnsName $node.esxi.ip -Server ($node.esxi.dns2).trim() -ErrorAction SilentlyContinue).NameHost
               if ( $ESXiHostNameOne -match $node.esxi.hostname ) {
                  write-host "Good:" $node.esxi.ip "resolved to" $node.esxi.hostname "on" ($node.esxi.dns1).trim() -ForeGroundColor Green
               } else {
