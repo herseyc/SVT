@@ -105,6 +105,7 @@ foreach ($datacenter in $SVTPreFlight.preflight.datacenter) {
          foreach ($vcenter in $datacenter.vcenter) {
               write-host "vCenter Hostname: " $vcenter.hostname
               write-host "vCenter IP: " $vcenter.ip
+              write-host "Testing vCenter IP Address:" $vcenter.ip
               $vcenteriptest = TestPing $vcenter.ip
               if ( $vcenteriptest ) {
                  write-host "Good: " $vcenter.ip " answers ping." -ForeGroundColor Green
