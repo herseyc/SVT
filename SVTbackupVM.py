@@ -116,7 +116,7 @@ htoken = ['Accept: application/json', 'Content-Type: application/vnd.simplivity.
 vmbackup = jpost_SVTREST(url, sdata, htoken)
 
 #Report task details
-print 'SimpliVity Clone ', vmbackup['task']['state']
+print 'SimpliVity Backup ', vmbackup['task']['state']
 print 'SVT Task Id: ', vmbackup['task']['id']
 
 
