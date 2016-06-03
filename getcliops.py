@@ -1,5 +1,5 @@
 # Code snippet to get cli opts in python
-import getopt
+import getopt, sys
 
 #Clear variables
 ovc = ''
@@ -26,7 +26,16 @@ for opt, arg in opts:
    elif opt in ("-o", "--ovc"):
       ovc = arg
 
+
+if sourcevm == "" or username == "" or password == "" or ovc == "":
+   print 'Missing required option'
+   print 'SVTVMbackupVM.py -s <sourcevm> -u <username> -p <password> -o <OVCIP>'
+   sys.exit(2)
+   
+
 print 'Source VM is: ', sourcevm
 print 'Username is: ', username
 print 'Password is: ', password
 print 'OVC is: ', ovc
+
+
