@@ -22,10 +22,10 @@ ovc = 'OVC_IP'
 username = 'DEMO\AESOMEADMIN'
 password = 'AWESOMEADMINPASSWORD'
 
-#Clear sourcevm and clonevm
+#Clear sourcevm 
 sourcevm = ''
 
-#Get sourcevm and clonevm from command line args
+#Get sourcevm from command line args
 try:
    opts, args = getopt.getopt(sys.argv[1:],"hs:",["sourcevm="])
 except getopt.GetoptError:
