@@ -1,3 +1,12 @@
+##################################################################
+# Use Python (pyCurl) and the SimpliVity REST API to backup a VM
+# Usage: SVTbackupVM.py -s SOURCEVM 
+#
+# http://www.vhersey.com/
+# 
+# http://www.simplivity.com/
+#
+##################################################################
 import pycurl
 import json
 import base64
