@@ -7,7 +7,7 @@
 # Script: UpdateSVT-VLANS.ps1
 #
 # History:
-# 09/15/2015 - Hersey http://www.vhersey.com/ - Created
+# 09/15/2016 - Hersey http://www.vhersey.com/ - Created
 #######################################
 ###############VARIABLES###############
 # vCenter Inventory Name of SimpliVity Hosts
