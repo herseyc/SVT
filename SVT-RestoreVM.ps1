@@ -78,9 +78,27 @@ if ( $backuptorestore ) {
    Write-Host "Restoring VM $vm from $backuptorestore to $dsid ... "
    $response = Invoke-RestMethod -Uri $uri -Headers $headers -Body $body -Method Post -ContentType 'application/vnd.simplivity.v1+json'
    
+   #Get Task ID
+   $taskid = $response.id
+   $loop = $true
+   while ($loop) { 
+      $uri = "https://" + $ovc + "/api/tasks/" + $taskid
+      #Check restore task for completion
+      $response = Invoke-RestMethod -Uri $uri -Headers $headers -Method Get
+      $result = $response.state
+      if ($result -eq "COMLETED") {
+         Write-Host "Task ID: $taskid - VM $vm successfully restored to $restorename in $recoverydatacenter"
+         $loop = $false
+         exit 0
+      }
+      #Sleep for 10 Seconds
+      Start-Sleep 10
+   }
+   
 } else {
           
    Write-Host "Backup for $vm not found."
+   exit 1
       
 }
    
