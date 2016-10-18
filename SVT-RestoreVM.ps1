@@ -19,11 +19,11 @@ param(
  [Parameter(Mandatory=$true, HelpMessage=”Restored Name”)][string]$Name
 )
 ############## Set Variables ############## 
-$vmtorestore = $VM
-$recoverydatacenter = $DC
 $ovc = $OVC
 $username = $Username
 $pass_word = $Password
+$vmtorestore = $VM
+$recoverydatacenter = $DC
 $restorename = $Name
 
 #Ignore Self Signed Certificates and set TLS
