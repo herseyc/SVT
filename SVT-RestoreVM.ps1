@@ -58,7 +58,7 @@ $atoken = $response.access_token
 $headers = @{}
 $headers.Add("Authorization", "Bearer $atoken")
 
-# Restore Defined VM in Recovery Datacenter
+# Restore Defined VM in Recovery Datacentertask
 # Get last backup for VM in Recovery Datacenter
 $uri = "https://" + $ovc + "/api/backups?virtual_machine_name=" + $vmtorestore + "&omnistack_cluster_name=" + $recoverydatacenter + "&limit=1"
 $response = Invoke-RestMethod -Uri $uri -Headers $headers -Method Get
@@ -79,17 +79,22 @@ if ( $backuptorestore ) {
    $response = Invoke-RestMethod -Uri $uri -Headers $headers -Body $body -Method Post -ContentType 'application/vnd.simplivity.v1+json'
    
    #Get Task ID
-   $taskid = $response.id
+   $taskid = $response.task.id
    $loop = $true
    while ($loop) { 
       $uri = "https://" + $ovc + "/api/tasks/" + $taskid
       #Check restore task for completion
       $response = Invoke-RestMethod -Uri $uri -Headers $headers -Method Get
-      $result = $response.state
+      $result = $response.task.state
       if ($result -eq "COMLETED") {
          Write-Host "Task ID: $taskid - VM $vm successfully restored to $restorename in $recoverydatacenter"
          $loop = $false
          exit 0
+      }
+      if ($result -eq "FAILED") {
+         Write-Host "Task ID: $taskid - VM $vm restore failed"
+         $loop = $false
+         exit 1
       }
       #Sleep for 10 Seconds
       Start-Sleep 10
