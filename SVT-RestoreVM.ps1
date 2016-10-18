@@ -67,7 +67,7 @@ $backuptorestore = $response.backups[0].id
 $recoverydatastore = $response.backups[0].datastore_id
 
 if ( $backuptorestore ) {
-          
+   #Restore from last backup       
    $uri = "https://" + $ovc + "/api/backups/" + $backuptorestore + "/restore?restore_original=false"
    $body = @{}
    $dsid = $recoverydatastore
