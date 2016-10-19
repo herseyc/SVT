@@ -2,7 +2,7 @@
 # Use PowerShell and the SimpliVity REST API  to 
 # Restore a SVT Protected VM 
 #
-# Usage: SVT-RestoreVM.ps1 -OVC OVCIP -Username USERNAME -Password PASSWORD -VM VMTORESTORE -DC RECOVERYDATACENTER -Name RESTOREVMNAME 
+# Usage: SVT-RestoreVM.ps1 -OVC OVCIP -Username USERNAME -Password PASSWORD -VM VMTORESTORE -DC RECOVERYDATACENTER -DS RECOVERYDATASTORE -Name RESTOREVMNAME 
 #
 # http://www.vhersey.com/
 # 
@@ -11,12 +11,13 @@
 ##################################################################
 #Get Parameters
 param(
- [Parameter(Mandatory=$true, HelpMessage=”OVC IP Address”)][string]$OVC,
- [Parameter(Mandatory=$true, HelpMessage=”OVC Username”)][string]$Username,
- [Parameter(Mandatory=$true, HelpMessage=”OVC Password”)][string]$Password,
- [Parameter(Mandatory=$true, HelpMessage=”VM to Restore”)][string]$VM,
- [Parameter(Mandatory=$true, HelpMessage=”Recovery Datacenter”)][string]$DC,
- [Parameter(Mandatory=$true, HelpMessage=”Restored Name”)][string]$Name
+ [Parameter(Mandatory=$true, HelpMessage="OVC IP Address")][string]$OVC,
+ [Parameter(Mandatory=$true, HelpMessage="OVC Username")][string]$Username,
+ [Parameter(Mandatory=$true, HelpMessage="OVC Password")][string]$Password,
+ [Parameter(Mandatory=$true, HelpMessage="VM to Restore")][string]$VM,
+ [Parameter(Mandatory=$true, HelpMessage="Recovery Datacenter")][string]$DC,
+  [Parameter(Mandatory=$true, HelpMessage="Recovery Datastore")][string]$DS,
+ [Parameter(Mandatory=$true, HelpMessage="Restored Name")][string]$Name
 )
 ############## Set Variables ############## 
 $ovc = $OVC
@@ -24,6 +25,7 @@ $username = $Username
 $pass_word = $Password
 $vmtorestore = $VM
 $recoverydatacenter = $DC
+$datastore = $DS
 $restorename = $Name
 
 #Ignore Self Signed Certificates and set TLS
@@ -62,9 +64,31 @@ $headers.Add("Authorization", "Bearer $atoken")
 # Get last backup for VM in Recovery Datacenter
 $uri = "https://" + $ovc + "/api/backups?virtual_machine_name=" + $vmtorestore + "&omnistack_cluster_name=" + $recoverydatacenter + "&limit=1"
 $response = Invoke-RestMethod -Uri $uri -Headers $headers -Method Get
-
+$i = 0
+foreach ($svtds in $response.datastores) {
+   if ($response.datastores[$i].name -eq $datastore) {
+      $recoverydatastore = $response.datastore[$i].id 
+   }
+   $i++
+}
 $backuptorestore = $response.backups[0].id
-$recoverydatastore = $response.backups[0].datastore_id
+
+#Get Recovery Datastore ID
+$uri = "https://" + $ovc + "/api/datastores"
+$response = Invoke-RestMethod -Uri $uri -Headers $headers -Method Get
+$i = 0
+foreach ( $svtds in $response.datastores ) {
+   if ($response.datastores[$i].name -eq $datastore) {
+      Write-Host "Found $DS"
+      $recoverydatastore = $response.datastore[$i].id 
+      $foundds = 1
+   }
+   $i++
+}
+if ($foundds -ne 1) {
+   Write-Host "Recovery Datastore $datastore Not Found"
+   exit 1
+}
 
 if ( $backuptorestore ) {
    #Restore from last backup       
@@ -86,7 +110,7 @@ if ( $backuptorestore ) {
       #Check restore task for completion
       $response = Invoke-RestMethod -Uri $uri -Headers $headers -Method Get
       $result = $response.task.state
-      if ($result -eq "COMLETED") {
+      if ($result -eq "COMPLETED") {
          Write-Host "Task ID: $taskid - VM $vm successfully restored to $restorename in $recoverydatacenter"
          $loop = $false
          exit 0
