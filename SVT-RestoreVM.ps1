@@ -1,4 +1,4 @@
-##################################################################
+ ##################################################################
 # Use PowerShell and the SimpliVity REST API  to 
 # Restore a SVT Protected VM 
 #
@@ -76,14 +76,15 @@ $backuptorestore = $response.backups[0].id
 #Get Recovery Datastore ID
 $uri = "https://" + $ovc + "/api/datastores"
 $response = Invoke-RestMethod -Uri $uri -Headers $headers -Method Get
-$i = 0
-foreach ( $svtds in $response.datastores ) {
-   if ($response.datastores[$i].name -eq $datastore) {
-      Write-Host "Found $DS"
-      $recoverydatastore = $response.datastore[$i].id 
+$dscount = $response.count
+for ($i=0; $i -lt $dscount; $i++) {
+   $dsname = $response.datastores[$i].name
+   #Write-Host $dsname
+   if ($dsname -eq $datastore) {
+      #Write-Host "Found $DS"
+      $recoverydatastore = $response.datastores[$i].id 
       $foundds = 1
    }
-   $i++
 }
 if ($foundds -ne 1) {
    Write-Host "Recovery Datastore $datastore Not Found"
@@ -131,4 +132,3 @@ if ( $backuptorestore ) {
       
 }
    
-
