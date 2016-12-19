@@ -42,7 +42,8 @@ $body = @{username="$username";password="$pass_word";grant_type="password"}
 $headers = @{}
 $headers.Add("Authorization", "Basic $base64")
 $response = Invoke-RestMethod -Uri $uri -Headers $headers -Body $body -Method Post 
-    
+
+# SVT Access Token
 $atoken = $response.access_token
 
 # Create SVT Auth Header
@@ -58,6 +59,7 @@ for ($i=1;$i -le $response.backups.count; $i++)
 { 
 
   Write-Host "$($response.backups[$i-1].virtual_machine_name),$($response.backups[$i-1].name),$($response.backups[$i-1].created_at)"
+  
 }
 
 
