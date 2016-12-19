@@ -51,14 +51,14 @@ $headers = @{}
 $headers.Add("Authorization", "Bearer $atoken")
 
 # Get Manual SVT Backups in Federation
-$uri = "https://" + $ovc + "/api/backups?type=MANUAL&limit=1000&fields=name%2Ctype%2Cvirtual_machine_name%2Ccreated_at"
+$uri = "https://" + $ovc + "/api/backups?type=MANUAL&limit=1000&fields=name%2Ctype%2Cvirtual_machine_name%2Ccreated_at%2Comnistack_cluster_name"
 $response = Invoke-RestMethod -Uri $uri -Headers $headers -Method Get
 
-# Comma separate - VM Name, Backup Name, Backup Created At
+# Comma separate - VM Name, Backup Name, OmniStack Cluster Name (Datacenter), Backup Created At
 for ($i=1;$i -le $response.backups.count; $i++) 
 { 
 
-  Write-Host "$($response.backups[$i-1].virtual_machine_name),$($response.backups[$i-1].name),$($response.backups[$i-1].created_at)"
+  Write-Host "$($response.backups[$i-1].virtual_machine_name),$($response.backups[$i-1].name),$($response.backups[$i-1].omnistack_cluster_name),$($response.backups[$i-1].created_at)"
   
 }
 
