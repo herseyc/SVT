@@ -54,15 +54,13 @@ $base64 = [Convert]::ToBase64String([System.Text.UTF8Encoding]::UTF8.GetBytes("s
 $body = @{username="$username";password="$pass_word";grant_type="password"}
 $headers = @{}
 $headers.Add("Authorization", "Basic $base64")
-$response = Invoke-RestMethod -Uri $uri -Headers $headers -Body $body -Method Post 
-    
+$response = Invoke-RestMethod -Uri $uri -Headers $headers -Body $body -Method Post  
 $atoken = $response.access_token
-
+# Exit if there was an issue logging in
 if ($atoken -eq $null) {
    Write-Host "Unable to Authenticate"
    exit 1   
 }
-
 # Create SVT Auth Header
 $headers = @{}
 $headers.Add("Authorization", "Bearer $atoken")
@@ -71,28 +69,26 @@ $headers.Add("Authorization", "Bearer $atoken")
 $uri = "https://" + $ovc + "/api/virtual_machines?limit=1&show_optional_fields=false&name=" + $vmtobackup
 $response = Invoke-RestMethod -Uri $uri -Headers $headers -Method Get
 $vmid = $response.virtual_machines[0].id
-
+# Exit if the VM ID was not found
 if ($vmid -eq $null) {
    Write-Host "VM ID Not Found"
    exit 1
 }
 
-
-#Backup Virtual Machine
+#Backup Parameters
 $backupparams = @{}
 $backupparams.Add("backup_name", "$backupname")
 $backupparams.Add("destination_id", "$backupdatacenter")
 $backupparams.Add("retention", "$expiration")
-
-#Convert backupparams to json
+#Convert Backup Params to Json
 $backupjson = $backupparams | ConvertTo-Json
-
 #Add Content-Type for Json to headers
 $headers.Add("Content-Type", "application/vnd.simplivity.v1.1+json")
-
+#  POST to REST for Backup of VM ID
 $uri = "https://" + $ovc + "/api/virtual_machines/" + $vmid + "/backup"
 $response = Invoke-RestMethod -Uri $uri -Headers $headers -Method Post -Body $backupjson 
 
+# Remove Content-Type Json from headers
 $headers.Remove("Content-Type")
 
 #Make sure backup task completes.
