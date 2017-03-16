@@ -11,7 +11,7 @@
 ############## Set Variables ############## 
 $ovc = "XXX.XXX.XXX.XXX" #OVC Mgmt IP
 $username = "domain\user" #vCenter Username
-$pass = "$up3rS3cRet!" #vCenter Password
+$pass = "password" #vCenter Password
 
 # Function to Convert to Bytes to TiB, TB, GB, or GiB
 function ConvertTo ($inttoconvert) {
