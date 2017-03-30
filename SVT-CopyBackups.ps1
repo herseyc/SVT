@@ -11,9 +11,9 @@ $username = "user@domain" #vCenter Username
 $pass = "Password-01" #vCenter Password
 
 # OmniStack Cluster to Copy Backups From
-$srcOSCluster = "Dallas_cluster01"
+$srcOSCluster = "ProductionCluster"
 # OmniStack Cluater to Copy Backups to
-$dstOSCluster = "Melbourne_cluster01"
+$dstOSCluster = "DRCluster"
 #Number of backups to copy
 $numberBackups = "1000"
 #Starting backup 
