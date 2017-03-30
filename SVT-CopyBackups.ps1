@@ -100,7 +100,7 @@ foreach ( $srcBackup in $response.backups ) { #Start Backup Loop
          $timediff = [DateTime]$srcBackupExpire - [DateTime]$rightnow
          $dstBackupRetentionMins = [math]::Round($timediff.TotalMinutes, 0)
       }
-      Write-Host "Copying $srcCopyBackupId to $dstOSCluster"
+      Write-Host "Copying $dstBackupName for $dstVmName Backup ID $srcCopyBackupId to $dstOSCluster"
       $uri = "https://" + $ovc + "/api/backups/" + $srcCopyBackupId + "/copy"
       $response = Invoke-RestMethod -Uri $uri -Headers $jsonHeaders -Method Post -Body $dstCopyParams
       $taskid = $response.task.id
@@ -112,13 +112,13 @@ foreach ( $srcBackup in $response.backups ) { #Start Backup Loop
          $response = Invoke-RestMethod -Uri $uri -Headers $headers -Method Get
          $result = $response.task.state
          if ($result -eq "COMPLETED" ) {
-            Write-Host "Backup ID $copyBackupId copied to $dstOSCluster - Completed Successfully" -ForegroundColor Green
+            Write-Host "Backup $dstBackupName for $dstVmName copied to $dstOSCluster - Completed Successfully" -ForegroundColor Green
             $newBackupId = $response.task.affected_objects.object_id
             Write-Host "New Backup Id is: $newBackupId" -ForegroundColor Cyan
 
             #Set Expiration On Backup in $dstOSCluster (if it has one)
             if ($srcBackupExpire) {
-                Write-Host "Setting Retention Time on Copied Backup to $dstBackupRetentionMins Minutes from $now" -ForegroundColor Cyan
+                Write-Host "Setting Retention Time on Copied Backup to $dstBackupRetentionMins Minutes from $rightnow" -ForegroundColor Cyan
                 $retentionParams = "{ ""backup_id"" : [""$newBackupId""], ""retention"" : $dstBackupRetentionMins }"
                 $uri = "https://" + $ovc + "/api/backups/set_retention"
                 $response = Invoke-RestMethod -Uri $uri -Headers $jsonHeaders -Method Post -Body $retentionParams
