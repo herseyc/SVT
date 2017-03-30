@@ -112,7 +112,7 @@ foreach ( $srcBackup in $response.backups ) { #Start Backup Loop
          $response = Invoke-RestMethod -Uri $uri -Headers $headers -Method Get
          $result = $response.task.state
          if ($result -eq "COMPLETED" ) {
-            Write-Host "Backup ID $copyBackupId copied to $$dstOSCluster - Completed Successfully" -ForegroundColor Green
+            Write-Host "Backup ID $copyBackupId copied to $dstOSCluster - Completed Successfully" -ForegroundColor Green
             $newBackupId = $response.task.affected_objects.object_id
             Write-Host "New Backup Id is: $newBackupId" -ForegroundColor Cyan
 
