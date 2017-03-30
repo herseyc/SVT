@@ -117,7 +117,7 @@ foreach ( $srcBackup in $response.backups ) { #Start Backup Loop
             Write-Host "New Backup Id is: $newBackupId" -ForegroundColor Cyan
 
             #Set Expiration On Backup in $dstOSCluster (if it has one)
-            if ($srcBackupExpire) {
+            if ($srcBackupExpire -ne "NA") {
                 Write-Host "Setting Retention Time on Copied Backup to $dstBackupRetentionMins Minutes from $rightnow" -ForegroundColor Cyan
                 $retentionParams = "{ ""backup_id"" : [""$newBackupId""], ""retention"" : $dstBackupRetentionMins }"
                 $uri = "https://" + $ovc + "/api/backups/set_retention"
