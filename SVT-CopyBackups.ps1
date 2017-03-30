@@ -95,7 +95,7 @@ foreach ( $srcBackup in $response.backups ) { #Start Backup Loop
       $srcCopyBackupId = $srcBackup.id
       $srcBackupExpire = $srcBackup.expiration_time
       #Calculate Retention Minutes
-      if ($srcBackupExpire) {
+      if ($srcBackupExpire -ne "NA") {
          $rightnow = Get-Date
          $timediff = [DateTime]$srcBackupExpire - [DateTime]$rightnow
          $dstBackupRetentionMins = [math]::Round($timediff.TotalMinutes, 0)
