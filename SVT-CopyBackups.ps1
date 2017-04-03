@@ -96,9 +96,10 @@ foreach ( $srcBackup in $response.backups ) { #Start Backup Loop
       $srcBackupExpire = $srcBackup.expiration_time
       #Calculate Retention Minutes
       if ($srcBackupExpire -ne "NA") {
+         Write-Host "Source Backup Expiration: $srcBackupExpire"
          $rightnow = Get-Date
-         $rightnow = $rightnow.ToUniversalTime()
-         $timediff = [DateTime]$srcBackupExpire - [DateTime]$rightnow
+         $srcBackupUTC = Get-Date -Date $srcBackupExpire
+         $timediff = [DateTime]$srcBackupUTC.ToUniversalTime() - [DateTime]$rightnow.ToUniversalTime()
          $dstBackupRetentionMins = [math]::Round($timediff.TotalMinutes, 0)
       }
       Write-Host "Copying $dstBackupName for $dstVmName Backup ID $srcCopyBackupId to $dstOSCluster"
