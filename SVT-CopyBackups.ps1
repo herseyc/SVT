@@ -100,8 +100,8 @@ foreach ( $srcBackup in $response.backups ) { #Start Backup Loop
          $rightnow = Get-Date
          $srcBackupUTC = Get-Date -Date $srcBackupExpire
          $srcBackupUTC = [DateTime]::SpecifyKind($srcBackupUTC, [DateTimeKind]::Utc)
-         $srcBackupLocalTime = $srcBackupUTC.ToLocalTime()
-         $timediff = [DateTime]$srcBackupLocalTime - [DateTime]$rightnow
+         #$srcBackupLocalTime = $srcBackupUTC.ToLocalTime()
+         $timediff = [DateTime]$srcBackupUTC - [DateTime]$rightnow.ToUniversalTime()
          $dstBackupRetentionMins = [math]::Round($timediff.TotalMinutes, 0)
       }
       Write-Host "Copying $dstBackupName for $dstVmName Backup ID $srcCopyBackupId to $dstOSCluster"
