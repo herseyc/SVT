@@ -62,8 +62,8 @@ $headers.Add("Authorization", "Bearer $atoken")
 $uri = "https://" + $ovc + "/api/omnistack_clusters?show_optional_fields=false&fields=name%2Cid"
 $response = Invoke-RestMethod -Uri $uri -Headers $headers -Method Get
 
-$srcOSClusterId = ($response.omnistack_clusters | Where {$_.Name -match $srcOSCluster}).id
-$dstOSClusterId = ($response.omnistack_clusters | Where {$_.Name -match $dstOSCluster}).id
+$srcOSClusterId = ($response.omnistack_clusters | Where {$_.Name -eq $srcOSCluster}).id
+$dstOSClusterId = ($response.omnistack_clusters | Where {$_.Name -eq $dstOSCluster}).id
 
 $dstCopyParams = @{}
 $dstCopyParams.Add("destination_id", "$dstOSClusterId")
