@@ -99,8 +99,7 @@ foreach ( $srcBackup in $response.backups ) { #Start Backup Loop
          Write-Host "Source Backup Expiration: $srcBackupExpire"
          $rightnow = Get-Date
          $srcBackupUTC = Get-Date -Date $srcBackupExpire
-         $srcBackupUTC = [DateTime]::SpecifyKind($srcBackupUTC, [DateTimeKind]::Utc)
-         #$srcBackupLocalTime = $srcBackupUTC.ToLocalTime()
+         $srcBackupUTC = $srcBackupUTC.ToUniversalTime()
          $timediff = [DateTime]$srcBackupUTC - [DateTime]$rightnow.ToUniversalTime()
          $dstBackupRetentionMins = [math]::Round($timediff.TotalMinutes, 0)
       }
