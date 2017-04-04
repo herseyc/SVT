@@ -12,7 +12,7 @@ $pass = "Password-01" #vCenter Password
 
 # OmniStack Cluster to Copy Backups From
 $srcOSCluster = "ProductionCluster"
-# OmniStack Cluater to Copy Backups to
+# OmniStack Cluster to Copy Backups To
 $dstOSCluster = "DRCluster"
 #Number of backups to copy
 $numberBackups = "1000"
@@ -77,6 +77,8 @@ $jsonHeaders.Add("Accept", "application/json")
 $uri = "https://" + $ovc + "/api/backups?omnistack_cluster_id=" + $srcOSClusterId + "&fields=id%2Ctype%2Cname%2Cexpiration_time%2Cvirtual_machine_name&limit=" + $numberBackups + "&offset=" + $backupStartingOffset
 $response = Invoke-RestMethod -Uri $uri -Headers $headers -Method Get
 
+$authTimer = 0 # Initialize $authTimer
+
 foreach ( $srcBackup in $response.backups ) { #Start Backup Loop
    
    # Check dstOSClusterID for existing VM Backup with same Name
@@ -133,8 +135,38 @@ foreach ( $srcBackup in $response.backups ) { #Start Backup Loop
             Write-Host "Backup ID $copyBackupId copied to $$dstOSCluster - FAILED" -Foregroundcolor Red
             $loop = $false
          }
+
+         $authTimer++
+         # Get new $atoken every 5 minutes
+         if ($authTimer -ge 30) { #Start ReAuthorize
+             #Reauthenticate
+             $authTimer = 0 # Reset $authTimer
+             Write-Host "Refreshing Authentication to $ovc"
+             # Authenticate - Get New SVT Access Token
+             $uri = "https://" + $ovc + "/api/oauth/token"
+             $base64 = [Convert]::ToBase64String([System.Text.UTF8Encoding]::UTF8.GetBytes("simplivity:"))
+             $body = @{username="$username";password="$pass";grant_type="password"}
+             $headers = @{}
+             $headers.Add("Authorization", "Basic $base64") 
+             $response = Invoke-RestMethod -Uri $uri -Headers $headers -Body $body -Method Post 
+    
+             $atoken = $response.access_token
+
+             if ($atoken -eq $null) {
+                Write-Host "Unable to Authenticate" -Foregroundcolor Red
+                exit 1   
+             }
+
+             # Rebuild SVT Auth Header
+             $headers = @{}
+             $headers.Add("Authorization", "Bearer $atoken")
+             $jsonHeaders = $headers
+             $jsonHeaders.Add("Content-Type", "application/vnd.simplivity.v1.1+json")
+             $jsonHeaders.Add("Accept", "application/json")
+
+         } # End ReAuthorize
+
          Start-Sleep 10
       } # End Status Loop
-   }
+   } # End Backup Loop
 } # End Backup Loop
-
