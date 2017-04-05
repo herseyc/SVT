@@ -12,4 +12,4 @@ function SVT-AuthHeaders ($SVTovc, $SVTuser, $SVTpass) {
    return ,$headers
 }
 
-$restHeaders = SVT-Auth($ovc, $username, $SVTpass)
+$restHeaders = SVT-AuthHeaders($ovc, $username, $pass)
