@@ -38,6 +38,7 @@ $headers = @{}
 $headers.Add("Authorization", "Bearer $atoken")
 
 
+
 # Get OmniStack Clusters in Federation
 $uri = "https://" + $ovc + "/api/omnistack_clusters"
 $response = Invoke-RestMethod -Uri $uri -Headers $headers -Method Get
@@ -63,14 +64,12 @@ For ($i=0; $i -lt [int]$response.count; $i++) {
            #Write-Host "VM:" $vmrsp.virtual_machines[$v].name
            #Write-Host "VM SVT Backup Policy ID:" $vmrsp.virtual_machines[$v].policy_id
            if ( $vmrsp.virtual_machines[$v].policy_id -eq $dsrsp.datastores[$d].policy_id ) {
-              Write-Host $vmrsp.virtual_machines[$v].name "Yes - VM Policy Matches Default Datastore Policy"
+              Write-Host $vmrsp.virtual_machines[$v].name -ForeGroundColor Green
            } else {
-              Write-Host $vmrsp.virtual_machines[$v].name "No - VM Policy Does Not Match Default Datastore Policy"
+              Write-Host $vmrsp.virtual_machines[$v].name "VM SVT Backup Policy Set To:" $vmrsp.virtual_machines[$v].policy_name -ForeGroundColor Red
            }
            
        }
-   }
-    
+   }  
 }
-
 
