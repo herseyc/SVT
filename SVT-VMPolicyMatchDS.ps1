@@ -54,8 +54,8 @@ $uri = "https://" + $ovc + "/api/omnistack_clusters"
 $response = Invoke-RestMethod -Uri $uri -Headers $headers -Method Get
 
 For ($i=0; $i -lt [int]$response.count; $i++) {
-   Write-Host "SVT Datacenter Name:" $response.omnistack_clusters[$i].name
-   #Write-Host "Datacenter ID:" $response.omnistack_clusters[$i].id
+   Write-Host "SVT OmniStack Cluster Name:" $response.omnistack_clusters[$i].name
+   #Write-Host "SVT OmniStack Cluster ID:" $response.omnistack_clusters[$i].id
 
    # Get Datastores in OmniStack Cluster
    $uri = "https://" + $ovc + "/api/datastores?show_optional_fields=false&omnistack_cluster_id=" + $response.omnistack_clusters[$i].id
