@@ -1,3 +1,13 @@
+##################################################################
+# Use PowerShell and the SimpliVity REST API  to 
+# Compare VM SVT Backup Policy to Default Datastore SVT Backup Policy
+#
+# Usage: SVT-VMPolicyMatchDS.ps1
+#
+# http://www.vhersey.com/
+#
+##################################################################
+
 ############## BEGIN USER VARIABLES ############## 
 $ovc = "<ovc-ip>"
 $username = "<username>"
