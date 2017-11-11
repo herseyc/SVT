@@ -55,7 +55,7 @@ For ($i=0; $i -lt [int]$response.count; $i++) {
    $bursp = Invoke-RestMethod -Uri $uri -Headers $headers -Method Get
    Write-Host "Backups Found: " $bursp.count
    For ($d=0; $d -lt [int]$bursp.count; $d++) {
-        $bursp[$d].backups | Select virtual_machine_name, virtual_machine_state, created_at, type, state | FT
+        $bursp[$d].backups | Select virtual_machine_name, virtual_machine_state, created_at, type, state, omnistack_cluster_name | FT
    }
 }
 
