@@ -1,3 +1,12 @@
+##################################################################
+# Use PowerShell and the SimpliVity REST API  to 
+# To Create a Report of Backups Taken in the Last 24 Hours
+#
+# Usage: SVT-DailyBackupReport.ps1
+#
+# http://www.vhersey.com/
+#
+##################################################################
 ############## BEGIN USER VARIABLES ############## 
 $ovc = "<OVCIP>"
 $username = "<USERNAME>"
@@ -36,10 +45,9 @@ $atoken = $response.access_token
 $headers = @{}
 $headers.Add("Authorization", "Bearer $atoken")
 
+# Get Date Back 24 Hours - Format Correctly for SVT REST API
 $yesterday = (get-date).AddHours(-24)
-
 $yesterday = $yesterday.ToUniversalTime()
-
 $createdafter = (get-date $yesterday -format s) + "Z"
 
 # Get OmniStack Clusters in Federation
@@ -48,8 +56,7 @@ $response = Invoke-RestMethod -Uri $uri -Headers $headers -Method Get
 
 For ($i=0; $i -lt [int]$response.count; $i++) {
    Write-Host "SVT Cluster Name:" $response.omnistack_clusters[$i].name
-   #Write-Host "Datacenter ID:" $response.omnistack_clusters[$i].id
-
+   
    # Get Backups in OmniStack Cluster
    $uri = "https://" + $ovc + "/api/backups?show_optional_fields=false&omnistack_cluster_id=" + $response.omnistack_clusters[$i].id + "&created_after=" + $createdafter
    $bursp = Invoke-RestMethod -Uri $uri -Headers $headers -Method Get
