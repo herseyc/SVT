@@ -67,7 +67,7 @@ $headers = @{}
 $headers.Add("Authorization", "Bearer $atoken")
 
 # Get OmniStack Clusters
-$uri = "https://" + $ovc + "/api/omnistack_clusters?fields=id%2C%20name%2C%20members%2C%20free_space%2C%20allocated_capacity%2C%20used_capacity%2C%20used_logical_capacity"
+$uri = "https://" + $ovc + "/api/omnistack_clusters?show_optional_fields=true&fields=id%2C%20name%2C%20members%2C%20free_space%2C%20allocated_capacity%2C%20used_capacity%2C%20used_logical_capacity"
 $response = Invoke-RestMethod -Uri $uri -Headers $headers -Method Get
 
 Write-Host $response.count "OmniStack Clusters in Federation"
