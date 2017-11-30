@@ -51,7 +51,7 @@ $headers.Add("Authorization", "Bearer $atoken")
 
 
 # Get OmniStack Clusters in Federation
-$uri = "https://" + $ovc + "/api/omnistack_clusters"
+$uri = "https://" + $ovc + "/api/omnistack_clusters?show_optional_fields=true"
 $response = Invoke-RestMethod -Uri $uri -Headers $headers -Method Get
 
 
