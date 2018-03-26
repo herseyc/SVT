@@ -1,7 +1,7 @@
 ########################################################
 #
 #  SVT-VMHAMAP.ps1
-#  Map VM Primary and Secondary Data
+#  Map VM Primary Data and Secondary Data Locations
 #
 #  Hersey Cartwright - http://www.vhersey.com/
 #
