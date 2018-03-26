@@ -78,7 +78,11 @@ foreach ($svtvm in $response.virtual_machines) { # Start SVT VM Loop
   $haMAP | Add-Member -Type NoteProperty -Name OSCLUSTER -Value $svtvm.omnistack_cluster_name
   $primary = ($omnistackhosts.hosts -match ( $svtvm.replica_set -match "PRIMARY").id ).name
   $haMAP | Add-Member -Type NoteProperty -Name VMPRIMARY -Value $primary
-  $secondary = ($omnistackhosts.hosts -match ( $svtvm.replica_set -match "SECONDARY").id ).name
+  if ( !($svtvm.replica_set -match "SECONDARY").id ) {
+     $secondary = "NONE"
+  } else {
+     $secondary = ($omnistackhosts.hosts -match ( $svtvm.replica_set -match "SECONDARY").id ).name
+  }
   $haMAP | Add-Member -Type NoteProperty -Name VMSECONDARY -Value $secondary
   
   #Write-Host $svtvm.name "," $svtvm.state "," $svtvm.ha_status "," $svtvm.omnistack_cluster_name "," $svtvm.datastore_name ""  
