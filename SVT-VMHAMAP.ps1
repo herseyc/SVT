@@ -68,11 +68,14 @@ $vmMAP = @()
 
 foreach ($svtvm in $response.virtual_machines) { # Start SVT VM Loop
 
+  $primary = ""
+  $secondary = ""
+  
   $haMAP = New-Object -TypeName PSObject
   $haMAP | Add-Member -Type NoteProperty -Name VMNAME -Value $svtvm.name
   $haMAP | Add-Member -Type NoteProperty -Name VMSTATE -Value $svtvm.state
   $haMAP | Add-Member -Type NoteProperty -Name VMHA -Value $svtvm.ha_status
-  $haMAP | Add-Member -Type NoteProperty -Name OSCLUSTER -Value $svtvm.omnistack_cluster
+  $haMAP | Add-Member -Type NoteProperty -Name OSCLUSTER -Value $svtvm.omnistack_cluster_name
   $primary = ($omnistackhosts.hosts -match ( $svtvm.replica_set -match "PRIMARY").id ).name
   $haMAP | Add-Member -Type NoteProperty -Name VMPRIMARY -Value $primary
   $secondary = ($omnistackhosts.hosts -match ( $svtvm.replica_set -match "SECONDARY").id ).name
